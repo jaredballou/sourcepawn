@@ -385,11 +385,9 @@ static OPCODEC opcodelist[] = {
   { 25, "lidx",       sIN_CSEG, parm0 },
   { 26, "lidx.b",     sIN_CSEG, parm1 },
   {  2, "load.alt",   sIN_CSEG, parm1 },
-  {154, "load.both",  sIN_CSEG, parm2 },  /* version 9 */
   {  9, "load.i",     sIN_CSEG, parm0 },
   {  1, "load.pri",   sIN_CSEG, parm1 },
   {  4, "load.s.alt", sIN_CSEG, parm1 },
-  {155, "load.s.both",sIN_CSEG, parm2 },  /* version 9 */
   {  3, "load.s.pri", sIN_CSEG, parm1 },
   { 10, "lodb.i",     sIN_CSEG, parm1 },
   {  8, "lref.s.alt", sIN_CSEG, parm1 },
@@ -411,22 +409,6 @@ static OPCODEC opcodelist[] = {
   { 39, "push.c",     sIN_CSEG, parm1 },
   { 36, "push.pri",   sIN_CSEG, parm0 },
   { 41, "push.s",     sIN_CSEG, parm1 },
-  {139, "push2",      sIN_CSEG, parm2 },  /* version 9 */
-  {141, "push2.adr",  sIN_CSEG, parm2 },  /* version 9 */
-  {138, "push2.c",    sIN_CSEG, parm2 },  /* version 9 */
-  {140, "push2.s",    sIN_CSEG, parm2 },  /* version 9 */
-  {143, "push3",      sIN_CSEG, parm3 },  /* version 9 */
-  {145, "push3.adr",  sIN_CSEG, parm3 },  /* version 9 */
-  {142, "push3.c",    sIN_CSEG, parm3 },  /* version 9 */
-  {144, "push3.s",    sIN_CSEG, parm3 },  /* version 9 */
-  {147, "push4",      sIN_CSEG, parm4 },  /* version 9 */
-  {149, "push4.adr",  sIN_CSEG, parm4 },  /* version 9 */
-  {146, "push4.c",    sIN_CSEG, parm4 },  /* version 9 */
-  {148, "push4.s",    sIN_CSEG, parm4 },  /* version 9 */
-  {151, "push5",      sIN_CSEG, parm5 },  /* version 9 */
-  {153, "push5.adr",  sIN_CSEG, parm5 },  /* version 9 */
-  {150, "push5.c",    sIN_CSEG, parm5 },  /* version 9 */
-  {152, "push5.s",    sIN_CSEG, parm5 },  /* version 9 */
   { 48, "retn",       sIN_CSEG, parm0 },
   { 74, "sdiv.alt",   sIN_CSEG, parm0 },
   {104, "sgeq",       sIN_CSEG, parm0 },
