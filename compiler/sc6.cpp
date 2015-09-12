@@ -355,8 +355,6 @@ static OPCODEC opcodelist[] = {
   {  0, "dump",       sIN_DSEG, do_dump },
   {166, "endproc",    sIN_CSEG, parm0 },
   { 95, "eq",         sIN_CSEG, parm0 },
-  {106, "eq.c.alt",   sIN_CSEG, parm1 },
-  {105, "eq.c.pri",   sIN_CSEG, parm1 },
   {119, "fill",       sIN_CSEG, parm1 },
   {162, "genarray",   sIN_CSEG, parm1 },
   {163, "genarray.z", sIN_CSEG, parm1 },

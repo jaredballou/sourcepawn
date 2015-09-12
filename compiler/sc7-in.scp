@@ -751,9 +751,6 @@ static SEQUENCE sequences_cmp[] = {
    *    --------------------------------------
    *    const.alt n1            add.c -n1
    *    sub                     -
-   *    --------------------------------------
-   *    const.alt n1            eq.c.pri n1
-   *    eq                      -
    */
   {
       "const.alt %1!add!",
@@ -763,11 +760,6 @@ static SEQUENCE sequences_cmp[] = {
   {
       "const.alt %1!sub!",
       "add.c -%1!",
-    seqsize(2,1) - seqsize(1,1)
-  },
-  {
-      "const.alt %1!eq!",
-      "eq.c.pri %1!",
     seqsize(2,1) - seqsize(1,1)
   },
   /* Some operations use the alternative subtraction operation --these
