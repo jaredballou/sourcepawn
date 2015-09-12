@@ -1498,7 +1498,7 @@ static int hier2(value *lval)
       pushreg(sPRI);
       invoke_getter(lval->accessor);
       if (!check_userop(user_inc,lval->tag,0,1,lval,&lval->tag))
-        inc_pri();
+        addconst(1);
       popreg(sALT);
       invoke_setter(lval->accessor, TRUE);
       lval->ident = iEXPRESSION;
@@ -1519,7 +1519,7 @@ static int hier2(value *lval)
       pushreg(sPRI);
       invoke_getter(lval->accessor);
       if (!check_userop(user_dec,lval->tag,0,1,lval,&lval->tag))
-        dec_pri();
+        addconst(-1);
       popreg(sALT);
       invoke_setter(lval->accessor, TRUE);
       lval->ident = iEXPRESSION;
@@ -1899,7 +1899,7 @@ static int hier2(value *lval)
 
           // check_userop on an iACCESSOR acts as though the value is an rvalue.
           if (!check_userop(user_inc, lval->tag, 0, 1, lval, &lval->tag))
-            inc_pri();
+            addconst(1);
 
           popreg(sALT);
           invoke_setter(lval->accessor, FALSE);
@@ -1935,7 +1935,7 @@ static int hier2(value *lval)
 
           // check_userop on an iACCESSOR acts as though the value is an rvalue.
           if (!check_userop(user_dec, lval->tag, 0, 1, lval, &lval->tag))
-            dec_pri();
+            addconst(-1);
 
           popreg(sALT);
           invoke_setter(lval->accessor, FALSE);

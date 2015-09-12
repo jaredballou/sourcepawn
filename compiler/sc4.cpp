@@ -1142,18 +1142,6 @@ void nooperation(void)
   code_idx+=opcodes(1);
 }
 
-void inc_pri()
-{
-  stgwrite("\tinc.pri\n");
-  code_idx+=opcodes(1);
-}
-
-void dec_pri()
-{
-  stgwrite("\tdec.pri\n");
-  code_idx+=opcodes(1);
-}
-
 /*  increment symbol
  */
 void inc(value *lval)
@@ -1172,12 +1160,12 @@ void inc(value *lval)
     stgwrite("\tmove.alt\n");   /* copy address */
     stgwrite("\tlodb.i ");      /* read from PRI into PRI */
     outval(sCHARBITS/8,TRUE);   /* read one or two bytes */
-    stgwrite("\tinc.pri\n");
+    addconst(1);
     stgwrite("\tstrb.i ");      /* write PRI to ALT */
     outval(sCHARBITS/8,TRUE);   /* write one or two bytes */
     stgwrite("\tpop.alt\n");
     stgwrite("\tpop.pri\n");
-    code_idx+=opcodes(8)+opargs(2);
+    code_idx+=opcodes(7)+opargs(2);
   } else if (lval->ident==iREFERENCE) {
     assert(sym!=NULL);
     stgwrite("\tpush.pri\n");
@@ -1186,12 +1174,12 @@ void inc(value *lval)
     stgwrite("\tlref.s.pri ");
     outval(sym->addr,TRUE);
     /* increment */
-    stgwrite("\tinc.pri\n");
+    addconst(1);
     /* store dereferenced value */
     stgwrite("\tsref.s.pri ");
     outval(sym->addr,TRUE);
     stgwrite("\tpop.pri\n");
-    code_idx+=opcodes(5)+opargs(2);
+    code_idx+=opcodes(4)+opargs(2);
   } else {
     /* local or global variable */
     assert(sym!=NULL);
@@ -1224,12 +1212,12 @@ void dec(value *lval)
     stgwrite("\tmove.alt\n");   /* copy address */
     stgwrite("\tlodb.i ");      /* read from PRI into PRI */
     outval(sCHARBITS/8,TRUE);   /* read one or two bytes */
-    stgwrite("\tdec.pri\n");
+    addconst(-1);
     stgwrite("\tstrb.i ");      /* write PRI to ALT */
     outval(sCHARBITS/8,TRUE);   /* write one or two bytes */
     stgwrite("\tpop.alt\n");
     stgwrite("\tpop.pri\n");
-    code_idx+=opcodes(8)+opargs(2);
+    code_idx+=opcodes(7)+opargs(2);
   } else if (lval->ident==iREFERENCE) {
     assert(sym!=NULL);
     stgwrite("\tpush.pri\n");
@@ -1238,12 +1226,12 @@ void dec(value *lval)
     stgwrite("\tlref.s.pri ");
     outval(sym->addr,TRUE);
     /* decrement */
-    stgwrite("\tdec.pri\n");
+    addconst(-1);
     /* store dereferenced value */
     stgwrite("\tsref.s.pri ");
     outval(sym->addr,TRUE);
     stgwrite("\tpop.pri\n");
-    code_idx+=opcodes(5)+opargs(2);
+    code_idx+=opcodes(4)+opargs(2);
   } else {
     /* local or global variable */
     assert(sym!=NULL);

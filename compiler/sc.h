@@ -760,8 +760,6 @@ void setheap_save(cell value);
 void stradjust(regid reg);
 void invoke_getter(struct methodmap_method_s *method);
 void invoke_setter(struct methodmap_method_s *method, int save);
-void inc_pri();
-void dec_pri();
 void load_hidden_arg();
 void load_glbfn(symbol *sym);
 
