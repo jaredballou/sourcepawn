@@ -422,7 +422,6 @@ static OPCODEC opcodelist[] = {
   {102, "sleq",       sIN_CSEG, parm0 },
   {101, "sless",      sIN_CSEG, parm0 },
   { 72, "smul",       sIN_CSEG, parm0 },
-  { 88, "smul.c",     sIN_CSEG, parm1 },
   { 22, "sref.s.alt", sIN_CSEG, parm1 },
   { 21, "sref.s.pri", sIN_CSEG, parm1 },
   { 67, "sshr",       sIN_CSEG, parm0 },
