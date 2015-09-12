@@ -943,51 +943,6 @@ static SEQUENCE sequences_cmp[] = {
       "dec.s %1!;$exp!",
     seqsize(2,2) - seqsize(1,1)
   },
-  /* ??? the same (increments and decrements) for references */
-  /* Loading the constant zero has a special opcode.
-   * When storing zero in memory, the value of PRI must not be later on.
-   *    const.pri 0             zero n1
-   *    stor.pri n1             ;$exp
-   *    ;$exp                   -
-   *    --------------------------------------
-   *    const.pri 0             zero.s n1
-   *    stor.s.pri n1           ;$exp
-   *    ;$exp                   -
-   *    --------------------------------------
-   *    zero.pri                zero n1
-   *    stor.pri n1             ;$exp
-   *    ;$exp                   -
-   *    --------------------------------------
-   *    zero.pri                zero.s n1
-   *    stor.s.pri n1           ;$exp
-   *    ;$exp                   -
-   *    --------------------------------------
-   *    const.pri 0             zero.pri
-   *    --------------------------------------
-   *    const.alt 0             zero.alt
-   * The last two alternatives save more memory than they save
-   * time, but anyway...
-   */
-  {
-      "const.pri 0!stor.pri %1!;$exp!",
-      "zero %1!;$exp!",
-    seqsize(2,2) - seqsize(1,1)
-  },
-  {
-      "const.pri 0!stor.s.pri %1!;$exp!",
-      "zero.s %1!;$exp!",
-    seqsize(2,2) - seqsize(1,1)
-  },
-  {
-      "zero.pri!stor.pri %1!;$exp!",
-      "zero %1!;$exp!",
-    seqsize(2,1) - seqsize(1,1)
-  },
-  {
-      "zero.pri!stor.s.pri %1!;$exp!",
-      "zero.s %1!;$exp!",
-    seqsize(2,1) - seqsize(1,1)
-  },
   {
       "const.pri 0!",
       "zero.pri!",

@@ -442,10 +442,8 @@ static OPCODEC opcodelist[] = {
   {160, "tracker.push.c", sIN_CSEG, parm1 },
   { 35, "xchg",       sIN_CSEG, parm0 },
   { 83, "xor",        sIN_CSEG, parm0 },
-  { 91, "zero",       sIN_CSEG, parm1 },
   { 90, "zero.alt",   sIN_CSEG, parm0 },
   { 89, "zero.pri",   sIN_CSEG, parm0 },
-  { 92, "zero.s",     sIN_CSEG, parm1 },
 };
 
 #define MAX_INSTR_LEN   30
