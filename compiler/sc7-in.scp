@@ -952,14 +952,5 @@ static SEQUENCE sequences_cmp[] = {
 
   { "", "", 0 },    /* separator, so optimizer can stop before generating macro opcodes */
 
-  /* optimizing the calling of native functions (which always have a parameter
-   * count pushed before, and the stack pointer restored afterwards
-   */
-  {
-      "push.c %1!sysreq.c %2!stack %3!",        //note: %3 == %1 + 4
-      "sysreq.n %2 %1!",
-    seqsize(3,3) - seqsize(1,2)
-  },
-  /* ----- */
   { NULL, NULL, 0 }
 };
