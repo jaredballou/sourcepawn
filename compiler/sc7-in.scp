@@ -968,23 +968,6 @@ static SEQUENCE sequences_cmp[] = {
       "sysreq.n %2 %1!",
     seqsize(3,3) - seqsize(1,2)
   },
-  /* Load a constant in a variable
-   *    const.pri n1            const n2 n1
-   *    stor.pri n2             -
-   *    --------------------------------------
-   *    const.pri n1            const.s n2 n1
-   *    stor.s.pri n2           -
-   */
-  {
-      "const.pri %1!stor.pri %2!",
-      "const %2 %1!",
-    seqsize(2,2) - seqsize(1,2)
-  },
-  {
-      "const.pri %1!stor.s.pri %2!",
-      "const.s %2 %1!",
-    seqsize(2,2) - seqsize(1,2)
-  },
   /* ----- */
   { NULL, NULL, 0 }
 };

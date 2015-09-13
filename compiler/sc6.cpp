@@ -342,10 +342,8 @@ static OPCODEC opcodelist[] = {
   {  0, "case",       sIN_CSEG, do_case },
   {130, "casetbl",    sIN_CSEG, parm0 },  /* version 1 */
   {  0, "code",       sIN_CSEG, set_currentfile },
-  {156, "const",      sIN_CSEG, parm2 },  /* version 9 */
   { 12, "const.alt",  sIN_CSEG, parm1 },
   { 11, "const.pri",  sIN_CSEG, parm1 },
-  {157, "const.s",    sIN_CSEG, parm2 },  /* version 9 */
   {  0, "data",       sIN_DSEG, set_currentfile },
   {114, "dec",        sIN_CSEG, parm1 },
   {116, "dec.i",      sIN_CSEG, parm0 },
