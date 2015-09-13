@@ -882,59 +882,6 @@ static SEQUENCE sequences_cmp[] = {
       "jnz %1!",
     seqsize(2,1) - seqsize(1,1)
   },
-  /* Incrementing and decrementing leaves a value in
-   * in PRI which may not be used (for example, as the
-   * third expression in a "for" loop).
-   *    inc n1                  inc n1  ; ++n
-   *    load.pri n1             ;$exp
-   *    ;$exp                   -
-   *    --------------------------------------
-   *    load.pri n1             inc n1  ; n++, e.g. "for (n=0; n<10; n++)"
-   *    inc n1                  ;$exp
-   *    ;$exp                   -
-   * Plus the varieties for stack relative increments
-   * and decrements.
-   */
-  {
-      "inc %1!load.pri %1!;$exp!",
-      "inc %1!;$exp!",
-    seqsize(2,2) - seqsize(1,1)
-  },
-  {
-      "load.pri %1!inc %1!;$exp!",
-      "inc %1!;$exp!",
-    seqsize(2,2) - seqsize(1,1)
-  },
-  {
-      "inc.s %1!load.s.pri %1!;$exp!",
-      "inc.s %1!;$exp!",
-    seqsize(2,2) - seqsize(1,1)
-  },
-  {
-      "load.s.pri %1!inc.s %1!;$exp!",
-      "inc.s %1!;$exp!",
-    seqsize(2,2) - seqsize(1,1)
-  },
-  {
-      "dec %1!load.pri %1!;$exp!",
-      "dec %1!;$exp!",
-    seqsize(2,2) - seqsize(1,1)
-  },
-  {
-      "load.pri %1!dec %1!;$exp!",
-      "dec %1!;$exp!",
-    seqsize(2,2) - seqsize(1,1)
-  },
-  {
-      "dec.s %1!load.s.pri %1!;$exp!",
-      "dec.s %1!;$exp!",
-    seqsize(2,2) - seqsize(1,1)
-  },
-  {
-      "load.s.pri %1!dec.s %1!;$exp!",
-      "dec.s %1!;$exp!",
-    seqsize(2,2) - seqsize(1,1)
-  },
   {
       "const.pri 0!",
       "zero.pri!",
