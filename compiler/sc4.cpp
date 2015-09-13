@@ -34,7 +34,9 @@
 
 static int fcurseg;     /* the file number (fcurrent) for the active segment */
 
-void load_i();
+static void load_i();
+static void stor_i();
+static void xchg_regs();
 
 /* When a subroutine returns to address 0, the AMX must halt. In earlier
  * releases, the RET and RETN opcodes checked for the special case 0 address.
@@ -365,9 +367,21 @@ void idxaddr()
   code_idx += opcodes(1);
 }
 
-void load_i()
+static void load_i()
 {
   stgwrite("\tload.i\n");
+  code_idx+=opcodes(1);
+}
+
+static void stor_i()
+{
+  stgwrite("\tstor.i\n");
+  code_idx+=opcodes(1);
+}
+
+static void xchg_regs()
+{
+  stgwrite("\txchg\n");
   code_idx+=opcodes(1);
 }
 
@@ -1151,8 +1165,14 @@ void inc(value *lval)
   sym=lval->sym;
   if (lval->ident==iARRAYCELL) {
     /* indirect increment, address already in PRI */
-    stgwrite("\tinc.i\n");
-    code_idx+=opcodes(1);
+    pushreg(sALT);
+    pushreg(sPRI); // stack=[addr], pri=addr
+    load_i();      // stack=[addr], pri=val
+    addconst(1);   // stack=[addr], pri=val+n
+    popreg(sALT);  // stack=[],     pri=val+n, alt=addr
+    stor_i();      // stack=[],     pri=val+n, alt=addr
+    popreg(sPRI);  // pri=old_alt, alt=addr
+    xchg_regs();   // pri=addr, alt=old_alt
   } else if (lval->ident==iARRAYCHAR) {
     /* indirect increment of single character, address already in PRI */
     stgwrite("\tpush.pri\n");
@@ -1203,8 +1223,14 @@ void dec(value *lval)
   sym=lval->sym;
   if (lval->ident==iARRAYCELL) {
     /* indirect decrement, address already in PRI */
-    stgwrite("\tdec.i\n");
-    code_idx+=opcodes(1);
+    pushreg(sALT);
+    pushreg(sPRI); // stack=[addr], pri=addr
+    load_i();      // stack=[addr], pri=val
+    addconst(-1);  // stack=[addr], pri=val+n
+    popreg(sALT);  // stack=[],     pri=val+n, alt=addr
+    stor_i();      // stack=[],     pri=val+n, alt=addr
+    popreg(sPRI);  // pri=old_alt, alt=addr
+    xchg_regs();   // pri=addr, alt=old_alt
   } else if (lval->ident==iARRAYCHAR) {
     /* indirect decrement of single character, address already in PRI */
     stgwrite("\tpush.pri\n");
