@@ -701,9 +701,6 @@ static SEQUENCE sequences_cmp[] = {
    *    --------------------------------------
    *    zero.pri                push.c 0
    *    push.pri                -
-   *    --------------------------------------
-   *    addr.pri n1             push.adr n1
-   *    push.pri                -
    *
    * However, PRI must not be needed after this instruction
    * if this shortcut is used. Check for the ;$par comment.
@@ -727,11 +724,6 @@ static SEQUENCE sequences_cmp[] = {
       "zero.pri!push.pri!;$par!",
       "push.c 0!;$par!",
     seqsize(2,0) - seqsize(1,1)
-  },
-  {
-      "addr.pri %1!push.pri!;$par!",
-      "push.adr %1!;$par!",
-    seqsize(2,1) - seqsize(1,1)
   },
   /* References with a default value generate new cells on the heap
    * dynamically. That code often ends with:

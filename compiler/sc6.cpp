@@ -396,7 +396,6 @@ static OPCODEC opcodelist[] = {
   { 42, "pop.pri",    sIN_CSEG, parm0 },
   { 46, "proc",       sIN_CSEG, parm0 },
   { 40, "push",       sIN_CSEG, parm1 },
-  {133, "push.adr",   sIN_CSEG, parm1 },  /* version 4 */
   { 37, "push.alt",   sIN_CSEG, parm0 },
   { 39, "push.c",     sIN_CSEG, parm1 },
   { 36, "push.pri",   sIN_CSEG, parm0 },
