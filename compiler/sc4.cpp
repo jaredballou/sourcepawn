@@ -37,6 +37,8 @@ static int fcurseg;     /* the file number (fcurrent) for the active segment */
 static void load_i();
 static void stor_i();
 static void xchg_regs();
+static void emit_load(symbol *sym);
+static void emit_store(symbol *sym, regid reg);
 
 /* When a subroutine returns to address 0, the AMX must halt. In earlier
  * releases, the RET and RETN opcodes checked for the special case 0 address.
@@ -383,6 +385,31 @@ static void xchg_regs()
 {
   stgwrite("\txchg\n");
   code_idx+=opcodes(1);
+}
+
+static void emit_load(symbol *sym)
+{
+  if (sym->vclass == sLOCAL)
+    stgwrite("\tload.s.pri ");
+  else
+    stgwrite("\tload.pri ");
+  outval(sym->addr, TRUE);
+  code_idx += opcodes(1) + opargs(1);
+}
+
+static void emit_store(symbol *sym, regid reg)
+{
+  if (sym->vclass != sLOCAL) {
+    storereg(sym->addr, reg);
+    return;
+  }
+
+  if (reg == sPRI)
+    stgwrite("\tstor.s.pri ");
+  else
+    stgwrite("\tstor.s.alt ");
+  outval(sym->addr, TRUE);
+  code_idx += opcodes(1) + opargs(1);
 }
 
 // Load the hidden array argument into ALT.
@@ -1203,12 +1230,11 @@ void inc(value *lval)
   } else {
     /* local or global variable */
     assert(sym!=NULL);
-    if (sym->vclass==sLOCAL)
-      stgwrite("\tinc.s ");
-    else
-      stgwrite("\tinc ");
-    outval(sym->addr,TRUE);
-    code_idx+=opcodes(1)+opargs(1);
+    pushreg(sPRI);
+    emit_load(sym);
+    addconst(1);
+    emit_store(sym, sPRI);
+    popreg(sPRI);
   } /* if */
 }
 
@@ -1261,12 +1287,11 @@ void dec(value *lval)
   } else {
     /* local or global variable */
     assert(sym!=NULL);
-    if (sym->vclass==sLOCAL)
-      stgwrite("\tdec.s ");
-    else
-      stgwrite("\tdec ");
-    outval(sym->addr,TRUE);
-    code_idx+=opcodes(1)+opargs(1);
+    pushreg(sPRI);
+    emit_load(sym);
+    addconst(-1);
+    emit_store(sym, sPRI);
+    popreg(sPRI);
   } /* if */
 }
 
