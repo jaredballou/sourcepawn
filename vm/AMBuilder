@@ -11,16 +11,16 @@ Includes = [
   os.path.join(builder.sourcePath, 'sourcepawn', 'include'),
 ]
 
-if builder.compiler.like('gcc'):
-  builder.compiler.cflags += [
+if builder.cxx.like('gcc'):
+  builder.cxx.cflags += [
     '-Wno-invalid-offsetof',
     '-Wno-implicit-exception-spec-mismatch',
     '-Wno-unused-const-variable',
   ]
-  builder.compiler.cxxflags += ['-fno-rtti']
+  builder.cxx.cxxflags += ['-fno-rtti']
 
 # Build the static library.
-library = builder.compiler.StaticLibrary('sourcepawn')
+library = builder.cxx.StaticLibrary('sourcepawn')
 library.compiler.includes += Includes
 
 library.sources += [
@@ -57,7 +57,7 @@ dll.sources += [
   'dll_exports.cpp'
 ]
 
-if builder.target_platform == 'linux':
+if builder.target.platform == 'linux':
   dll.compiler.postlink += ['-lpthread', '-lrt']
 
 SP.libsourcepawn = builder.Add(dll)
@@ -75,6 +75,6 @@ shell.sources += [
   'shell.cpp'
 ]
 
-if builder.target_platform == 'linux':
+if builder.target.platform == 'linux':
   shell.compiler.postlink += ['-lpthread', '-lrt']
 builder.Add(shell)

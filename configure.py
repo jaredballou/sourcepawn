@@ -28,14 +28,18 @@ except:
 		sys.stderr.write('AMBuild must be installed to build this project.\n')
 		sys.stderr.write('http://www.alliedmods.net/ambuild\n')
 	sys.exit(1)
+finally:
+	if not getattr(run, 'HasAPI', None):
+		sys.stderr.write('AMBuild 2.1 or higher must be installed to build this project.\n')
+		sys.exit(1)
 
-run = run.PrepareBuild(sourcePath=sys.path[0])
-run.options.add_option('--enable-debug', action='store_const', const='1', dest='debug',
-                       help='Enable debugging symbols')
-run.options.add_option('--enable-optimize', action='store_const', const='1', dest='opt',
-                       help='Enable optimization')
-run.options.add_option('--arch', dest='arch', default='x86', help='Architecture (x86, x64)')
-run.options.add_option('--amtl', type='string', dest='amtl', default=None, help='Custom AMTL path')
-run.options.add_option('--build', type='string', dest='build', default='all', 
-                       help='Build which components (all, spcomp, vm, exp, test, core)')
-run.Configure()
+parser = run.BuildParser(sourcePath=sys.path[0], api='2.1')
+parser.options.add_option('--enable-debug', action='store_const', const='1', dest='debug',
+                          help='Enable debugging symbols')
+parser.options.add_option('--enable-optimize', action='store_const', const='1', dest='opt',
+                          help='Enable optimization')
+parser.options.add_option('--arch', dest='arch', default='x86', help='Architecture (x86, x64)')
+parser.options.add_option('--amtl', type='string', dest='amtl', default=None, help='Custom AMTL path')
+parser.options.add_option('--build', type='string', dest='build', default='all', 
+                          help='Build which components (all, spcomp, vm, exp, test, core)')
+parser.Configure()

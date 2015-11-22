@@ -15,7 +15,7 @@ compiler.includes += [
 if compiler.like('gcc'):
   compiler.cflags += ['-Wno-format']
   compiler.c_only_flags += ['-std=c99']
-  if builder.target_platform == 'linux':
+  if builder.target.platform == 'linux':
     compiler.postlink += ['-lm']
   compiler.postlink += ['-lstdc++']
   compiler.cxxflags += [
@@ -23,14 +23,14 @@ if compiler.like('gcc'):
   ]
 
 compiler.defines += ['HAVE_STDINT_H']
-if builder.target_platform == 'linux':
+if builder.target.platform == 'linux':
   compiler.defines += [
     'LINUX',
     'AMX_ANSIONLY',
     'ENABLE_BINRELOC',
     '_GNU_SOURCE'
   ]
-elif builder.target_platform == 'mac':
+elif builder.target.platform == 'mac':
   compiler.defines += [
     'DARWIN',
     'AMX_ANSIONLY',
@@ -58,7 +58,7 @@ binary.sources += [
   'smx-builder.cpp',
   'sp_symhash.cpp',
 ]
-if builder.target_platform != 'windows':
+if builder.target.platform != 'windows':
   binary.sources.append('binreloc.c')
 binary.compiler.linkflags[0:0] = [
   SP.zlib,

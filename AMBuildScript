@@ -27,34 +27,33 @@ class Config(object):
     super(Config, self).__init__()
 
   def configure(self):
-    cfg = builder.DetectCompilers()
-    cxx = cfg.cxx
+    cxx = builder.DetectCxx()
 
     if cxx.like('gcc'):
-      cfg.cflags += [
+      cxx.cflags += [
         '-pipe',
         '-Wall',
         '-Werror',
         '-Wno-switch',
         '-msse',
       ]
-      cfg.cxxflags += ['-std=c++11']
+      cxx.cxxflags += ['-std=c++11']
 
-      have_gcc = cxx.name is 'gcc'
-      have_clang = cxx.name is 'clang'
+      have_gcc = cxx.family is 'gcc'
+      have_clang = cxx.family is 'clang'
       if have_clang:
-        cfg.cxxflags += ['-Wno-unused-private-field']
-      if have_clang or (have_gcc and cxx.majorVersion >= 4):
-        cfg.cflags += ['-fvisibility=hidden']
-        cfg.cxxflags += ['-fvisibility-inlines-hidden']
-        if have_clang or (have_gcc and cxx.minorVersion >= 6):
-          cfg.cflags += ['-Wno-narrowing']
-        if (have_gcc and cxx.minorVersion >= 7) or (have_clang and cxx.majorVersion >= 4):
-          cfg.cxxflags += ['-Wno-delete-non-virtual-dtor']
+        cxx.cxxflags += ['-Wno-unused-private-field']
+      if have_clang or have_gcc:
+        cxx.cflags += ['-fvisibility=hidden']
+        cxx.cxxflags += ['-fvisibility-inlines-hidden']
+        if have_clang or (have_gcc and cxx.version >= '4.6'):
+          cxx.cflags += ['-Wno-narrowing']
+        if cxx.version >= 'gcc-4.7' or cxx.version >= 'clang-3.4':
+          cxx.cxxflags += ['-Wno-delete-non-virtual-dtor']
 
       # Disable some stuff we don't use, that gives us better binary
       # compatibility on Linux.
-      cfg.cxxflags += [
+      cxx.cxxflags += [
         '-fno-exceptions',
         '-fno-rtti',
         '-fno-threadsafe-statics',
@@ -63,35 +62,34 @@ class Config(object):
       ]
 
       if have_gcc:
-        cfg.cflags += ['-mfpmath=sse']
+        cxx.cflags += ['-mfpmath=sse']
 
-      if (have_gcc and cxx.majorVersion >= 4 and cxx.minorVersion >= 7) or \
-          (have_clang and cxx.majorVersion >= 3):
-        cfg.cxxflags += ['-Wno-delete-non-virtual-dtor']
+      if cxx.version >= 'gcc-4.7' or cxx.version >= 'clang-3.0':
+        cxx.cxxflags += ['-Wno-delete-non-virtual-dtor']
 
-      cfg.postlink += ['-lm']
-    elif cxx.name is 'msvc':
+      cxx.postlink += ['-lm']
+    elif cxx.family is 'msvc':
       if builder.options.debug == '1':
-        cfg.cflags += ['/MTd']
-        cfg.linkflags += ['/NODEFAULTLIB:libcmt']
+        cxx.cflags += ['/MTd']
+        cxx.linkflags += ['/NODEFAULTLIB:libcmt']
       else:
-        cfg.cflags += ['/MT']
-      cfg.defines += [
+        cxx.cflags += ['/MT']
+      cxx.defines += [
         '_CRT_SECURE_NO_DEPRECATE',
         '_CRT_SECURE_NO_WARNINGS',
         '_CRT_NONSTDC_NO_DEPRECATE',
         '_ITERATOR_DEBUG_LEVEL=0',
       ]
-      cfg.cflags += [
+      cxx.cflags += [
         '/W3',
         '/wd4351',
       ]
-      cfg.cxxflags += [
+      cxx.cxxflags += [
         '/EHsc',
         '/GR-',
         '/TP',
       ]
-      cfg.linkflags += [
+      cxx.linkflags += [
         '/MACHINE:X86',
         'kernel32.lib',
         'user32.lib',
@@ -109,37 +107,37 @@ class Config(object):
 
     # Optimization
     if builder.options.opt == '1':
-      cfg.defines += ['NDEBUG']
+      cxx.defines += ['NDEBUG']
       if cxx.like('gcc'):
-        cfg.cflags += ['-O3']
+        cxx.cflags += ['-O3']
       elif cxx.like('msvc'):
-        cfg.cflags += ['/Ox']
-        cfg.linkflags += ['/OPT:ICF', '/OPT:REF']
+        cxx.cflags += ['/Ox']
+        cxx.linkflags += ['/OPT:ICF', '/OPT:REF']
 
     # Debugging
     if builder.options.debug == '1':
-      cfg.defines += ['DEBUG', '_DEBUG']
+      cxx.defines += ['DEBUG', '_DEBUG']
       if cxx.like('msvc'):
-        cfg.cflags += ['/Od', '/RTC1']
+        cxx.cflags += ['/Od', '/RTC1']
 
     # This needs to be after our optimization flags which could otherwise disable it.
-    if cxx.name == 'msvc':
+    if cxx.family == 'msvc':
       # Don't omit the frame pointer.
-      cfg.cflags += ['/Oy-']
+      cxx.cflags += ['/Oy-']
 
     # Platform-specifics
-    if builder.target_platform == 'linux':
-      if cxx.name == 'gcc':
-        cfg.postlink += ['-static-libgcc']
-      elif cxx.name == 'clang':
-        cfg.postlink += ['-lgcc_eh']
-      cfg.postlink += ['-lpthread', '-lrt']
-    elif builder.target_platform == 'mac':
-      cfg.linkflags += [
+    if builder.target.platform == 'linux':
+      if cxx.family == 'gcc':
+        cxx.postlink += ['-static-libgcc']
+      elif cxx.family == 'clang':
+        cxx.postlink += ['-lgcc_eh']
+      cxx.postlink += ['-lpthread', '-lrt']
+    elif builder.target.platform == 'mac':
+      cxx.linkflags += [
         '-mmacosx-version-min=10.5',
       ]
-    elif builder.target_platform == 'windows':
-      cfg.defines += ['WIN32', '_WINDOWS']
+    elif builder.target.platform == 'windows':
+      cxx.defines += ['WIN32', '_WINDOWS']
 
     if builder.options.arch == 'x64':
       gccarch = '-m64'
@@ -148,17 +146,17 @@ class Config(object):
       gccarch = '-m32'
       msvcarch = '/MACHINE:X86'
 
-    if cxx.name == 'msvc':
-      if msvcarch not in cfg.linkflags:    
-        cfg.linkflags += [msvcarch]
+    if cxx.family == 'msvc':
+      if msvcarch not in cxx.linkflags:    
+        cxx.linkflags += [msvcarch]
     else:
-      if gccarch not in cfg.cflags:
-        cfg.cflags += [gccarch]
-      if gccarch not in cfg.linkflags:
-        cfg.linkflags += [gccarch]
+      if gccarch not in cxx.cflags:
+        cxx.cflags += [gccarch]
+      if gccarch not in cxx.linkflags:
+        cxx.linkflags += [gccarch]
 
-    cfg.defines += ['KE_THREADSAFE']
-    cfg.defines += ['SOURCEPAWN_VERSION="1.8"']
+    cxx.defines += ['KE_THREADSAFE']
+    cxx.defines += ['SOURCEPAWN_VERSION="1.8"']
 
     if builder.options.amtl:
       amtl_path = builder.options.amtl
@@ -170,20 +168,20 @@ class Config(object):
       raise Exception('Could not find AMTL at: {0}'.format(amtl_path))
     self.amtl = amtl_path
 
-    cfg.cxxincludes += [
+    cxx.cxxincludes += [
       os.path.join(self.amtl, 'amtl'),
       os.path.join(self.amtl),
       os.path.join(builder.sourcePath, 'include'),
     ]
 
   def Program(self, context, name):
-    binary = context.compiler.Program(name)
+    binary = context.cxx.Program(name)
     if binary.compiler.like('msvc'):
       binary.compiler.linkflags.append('/SUBSYSTEM:CONSOLE')
     return binary
 
   def Library(self, context, name):
-    binary = context.compiler.Library(name)
+    binary = context.cxx.Library(name)
     if binary.compiler.like('msvc'):
       binary.compiler.linkflags.append('/SUBSYSTEM:WINDOWS')
     return binary
@@ -199,17 +197,17 @@ class SourcePawn(object):
     self.amtl = amtl
     self.included_zlib = False
     self.spcomp_scripts = [
-      os.path.join(builder.currentSourceFolder, 'compiler/AMBuilder'),
+      os.path.join('compiler/AMBuilder'),
     ]
     self.vm_scripts = [
-      os.path.join(builder.currentSourceFolder, 'vm/AMBuilder'),
+      os.path.join('vm/AMBuilder'),
     ]
     self.test_scripts = [
-      os.path.join(builder.currentSourceFolder, 'testing/Testing.ambuild'),
+      os.path.join('testing/Testing.ambuild'),
     ]
     self.exp_scripts = [
-      os.path.join(builder.currentSourceFolder, 'exp/compiler/AMBuilder'),
-      os.path.join(builder.currentSourceFolder, 'exp/tools/docparse/AMBuilder'),
+      os.path.join('exp/compiler/AMBuilder'),
+      os.path.join('exp/tools/docparse/AMBuilder'),
     ]
     self.vars = {
       'Root': self.root,
@@ -218,17 +216,17 @@ class SourcePawn(object):
 
   def BuildSpcomp(self):
     self.EnsureZlib()
-    builder.RunBuildScripts(self.spcomp_scripts, self.vars)
+    builder.Build(self.spcomp_scripts, self.vars)
 
   def BuildVM(self):
     self.EnsureZlib()
-    builder.RunBuildScripts(self.vm_scripts, self.vars)
+    builder.Build(self.vm_scripts, self.vars)
 
   def BuildExperimental(self):
-    builder.RunBuildScripts(self.exp_scripts, self.vars)
+    builder.Build(self.exp_scripts, self.vars)
 
   def BuildTests(self):
-    builder.RunBuildScripts(self.test_scripts, self.vars)
+    builder.Build(self.test_scripts, self.vars)
 
   def BuildCore(self):
     self.BuildSpcomp()
@@ -243,8 +241,8 @@ class SourcePawn(object):
   def EnsureZlib(self):
     if self.included_zlib:
       return
-    zlib_dir = os.path.join(builder.currentSourceFolder, 'third_party/zlib/AMBuilder')
-    builder.RunBuildScripts([zlib_dir], self.vars)
+    zlib_dir = os.path.join('third_party/zlib/AMBuilder')
+    builder.Build([zlib_dir], self.vars)
     self.included_zlib = True
 
 if builder.parent is None:
@@ -252,17 +250,22 @@ if builder.parent is None:
   root.configure()
   sp = SourcePawn(root, root.amtl)
   build = getattr(builder.options, 'build', None)
-  if build == 'spcomp':
-    sp.BuildSpcomp()
-  elif build == 'vm':
-    sp.BuildVM()
-  elif build == 'exp':
-    sp.BuildExperimental()
-  elif build == 'test':
-    sp.BuildTests()
-  elif build == 'core':
-    sp.BuildCore()
-  else:
-    sp.BuildSuite()
 else:
-  rvalue = SourcePawn
+  sp = SourcePawn(external_root, external_amtl)
+  build = external_build
+
+if build == 'spcomp':
+  sp.BuildSpcomp()
+elif build == 'vm':
+  sp.BuildVM()
+elif build == 'exp':
+  sp.BuildExperimental()
+elif build == 'test':
+  sp.BuildTests()
+elif build == 'core':
+  sp.BuildCore()
+else:
+  sp.BuildSuite()
+
+if builder.parent is not None:
+  rvalue = sp
