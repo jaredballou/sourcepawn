@@ -1873,6 +1873,7 @@ static void declloc(int tokid)
               case iEXPRESSION:
               case iARRAYCELL:
               case iCONSTEXPR:
+              case iREFERENCE:  
                 break;
               default:
                 error(29);
@@ -2575,7 +2576,6 @@ static void decl_const(int vclass)
   token_t tok;
   int exprtag;
   int symbolline;
-  symbol *sym;
 
   do {
     int orgfline;
@@ -2625,7 +2625,7 @@ static void decl_const(int vclass)
     matchtag(tag,exprtag,FALSE);
     fline=orgfline;
 
-    sym=add_constant(constname,val,vclass,tag);
+    add_constant(constname,val,vclass,tag);
   } while (matchtoken(',')); /* enddo */   /* more? */
   needtoken(tTERM);
 }
@@ -2886,7 +2886,7 @@ static void parse_old_array_dims(declinfo_t *decl, int flags)
         &sym, 0, &val
       );
 
-      if (ident == iVARIABLE || ident == iEXPRESSION || ident == iARRAYCELL) {
+      if (ident == iVARIABLE || ident == iEXPRESSION || ident == iARRAYCELL || ident == iREFERENCE) {
         type->size = -1;
         type->dim[type->numdim] = 0;
       } else if (ident == iCONSTEXPR) {
